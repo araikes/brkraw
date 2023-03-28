@@ -133,9 +133,10 @@ COMMON_META_REF = \
                                                Type         = 'VisuCoilTransmitType'),
          CoilConfigName                 = 'ACQ_coil_config_file',  # if Transmit and Receive coil info in None
          MatrixCoilMode                 = 'ACQ_experiment_mode',
-         CoilCombinationMethod          = None,
+         CoilCombinationMethod          = 'RecoCombineMode',
 
          # SEQUENCE_SPECIFIC
+         MRAcquisitionType              = 'PVM_SpatDimEnum',  # 'VisuAcqEchoSequenceType'
          PulseSequenceType              = 'PULPROG',  # 'VisuAcqEchoSequenceType'
          ScanningSequence               = 'VisuAcqSequenceName',
          SequenceVariant                = 'VisuAcqEchoSequenceType',
@@ -151,7 +152,8 @@ COMMON_META_REF = \
          SequenceName                   = ['VisuAcquisitionProtocol',
                                            'ACQ_protocol_name'],  # if first component are None
          PulseSequenceDetails           = 'ACQ_scan_name',
-         NonlinearGradientCorrection    = 'VisuAcqKSpaceTraversal',
+         NonlinearGradientCorrection    = 'false',
+         MTState                        = 'VisuAcqMagnetizationTransfer',
 
          # IN_PLANE_SPATIAL_ENCODING
          NumberShots                    = 'VisuAcqKSpaceTrajectoryCnt',
@@ -162,22 +164,19 @@ COMMON_META_REF = \
          PhaseEncodingDirection         = [dict(key         = 'VisuAcqGradEncoding',
                                                 where       = 'phase_enc'),
                                            'VisuAcqImagePhaseEncDir'],  # Deprecated
-         EffectiveEchoSpacing           = dict(BWhzPixel    = 'VisuAcqPixelBandwidth',
-                                               MatSizePE    = dict(key='PVM_EncMatrix',
-                                                                   idx=[dict(key    = 'VisuAcqGradEncoding',
-                                                                             where  = 'phase_enc'),
-                                                                        1]),  # PV5.1
-                                               ACCfactor    = 'ACQ_phase_factor',
-                                               Equation     = '(1 / (MatSizePE * BWhzPixel)) / ACCfactor'),  # in second
-         TotalReadoutTime               = dict(ETL          = 'VisuAcqEchoTrainLength',
-                                               BWhzPixel    = 'VisuAcqPixelBandwidth',
-                                               ACCfactor    = 'ACQ_phase_factor',
-                                               Equation     = '(1 / BWhzPixel) / ACCfactor'),
+         AcquisitionMatrixPE            = dict(key = 'PVM_EncMatrix',
+                                               idx = [dict(key = 'VisuAcqGradEncoding',
+                                                           where = 'phase_enc'),
+                                                      1]),
+         ReconMatrixPE                  = dict(key = 'PVM_Matrix',
+                                               idx = [dict(key = 'VisuAcqGradEncoding',
+                                                           where = 'phase_enc'),
+                                                      1]),
+         EchoTrainLength                = 'VisuAcqEchoTrainLength',
+
 
          # TIMING_PARAMETERS
-         EchoTime                       = dict(TE           = 'VisuAcqEchoTime',
-                                               Equation     = 'np.array(TE)/1000'),
-         InversionTime                  = 'VisuAcqInversionTime',
+         InversionTime                  = 'VisuAcqInversionTime', #Deprecated
          SliceTiming                    = dict(TR           = 'VisuAcqRepetitionTime',
                                                Num_of_Slice = 'VisuCoreFrameCount',
                                                Order        = 'ACQ_obj_order',
@@ -200,8 +199,40 @@ COMMON_META_REF = \
          InstitutionalDepartmentName    = None)
 
 
+ANAT_META_REF = \
+    dict(EchoTime                       = dict(TE           = 'EffectiveTE',
+                                               Equation     = 'np.array(TE)/1000'),
+         RepetitionTime                 = dict(TR           = 'PVM_RepetitionTime',
+                                               Equation     = 'TR/1000'),
+         EffectiveEchoSpacing           = 'PVM_EchoTime',
+         TotalReadoutTime               = dict(TE    = 'PVM_EchoTime',
+                                               RareFactor = 'PVM_RareFactor',
+                                               Equation     = 'TE * (RareFactor -1)'),
+         RareFactor                     = 'PVM_RareFactor',
+         NumberOfAverages               = 'VisuAcqNumberOfAverages'
+         )    
+
+DWI_META_REF = \
+    dict(EchoTime                       = dict(TE           = 'EchoTime',
+                                               Equation     = 'np.array(TE)/1000'),
+         RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
+                                               Equation     = 'TR/1000'),
+         EffectiveEchoSpacing           = 'PVM_EpiEchoSpacing',
+         TotalReadoutTime               = dict(ES           = 'PVM_EpiEchoSpacing',
+                                               ReconMatrixPE = dict(key = 'PVM_Matrix',
+                                                                    idx = [dict(key = 'VisuAcqGradEncoding',
+                                                                                where = 'phase_enc'),
+                                                                           1]),
+                                               Equation     = '(ES * (ReconMatrixPE - 1))/1000'),
+         Segments                       = 'PVM_NSegments',
+         LittleDelta                    = 'PVM_DwGradDur',
+         BigDelta                       = 'PVM_DwGradSep'
+         )
+    
 FMRI_META_REF = \
-    dict(RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
+    dict(EchoTime                       = dict(TE           = 'EchoTime',
+                                               Equation     = 'np.array(TE)/1000'),
+         RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
                                                Equation     = 'TR/1000'),
          VolumeTiming                   = dict(TR           = 'VisuAcqRepetitionTime',
                                                NR           = 'PVM_NRepetitions',
@@ -226,7 +257,12 @@ FMRI_META_REF = \
 
 
 FIELDMAP_META_REF = \
-    dict(IntendedFor                    = '',
+    dict(EchoTime1                       = dict(TE           = 'FirstEchoTime',
+                                               Equation      = 'np.array(TE)/1000'),
+         EchoTime2                       = dict(TE           = 'FirstEchoTime',
+                                                ES           = 'EchoSpacing', 
+                                                Equation     = '(TE + ES)/1000'),
+         IntendedFor                    = '',
          )
 
 DATASET_DESC_REF = \
