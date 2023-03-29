@@ -352,21 +352,21 @@ def get_bids_ref_obj(ref_path, row):
     if os.path.exists(ref_path) and ref_path.lower().endswith('.json'):
         ref_data = json.load(open(ref_path))
         ref = ref_data['common']
-        if row.modality[0] in ['bold', 'cbv', 'epi']:
+        if row.modality in ['bold', 'cbv', 'epi']:
             if 'func' in ref_data.keys():
                 for k, v in ref_data['func'].items():
                     if k in ref.keys():
                         raise InvalidApproach('Duplicated key is found at func: {}'.format(k))
                     else:
                         ref[k] = v
-        if row.modality[0] == 'dwi':
+        if row.modality in ['dwi']:
             if 'dwi' in ref_data.keys():
                 for k, v in ref_data['dwi'].items():
                     if k in ref.keys():
                         raise InvalidApproach('Duplicated key is found at dwi: {}'.format(k))
                     else:
                         ref[k] = v
-        if row.DataType[0] == 'anat':
+        if row.DataType in ['anat']:
             if 'anat' in ref_data.keys():
                 for k, v in ref_data['anat'].items():
                     if k in ref.keys():
@@ -375,7 +375,7 @@ def get_bids_ref_obj(ref_path, row):
                         ref[k] = v
         # the below may not optimal for Bruker system,
         # only fieldmap and magnitude
-        if row.modality[0] in ['fieldmap', 'phase1', 'phase2',
+        if row.modality in ['fieldmap', 'phase1', 'phase2',
                             'phasediff', 'magnitude',
                             'magnitude1', 'magnitude2']:
             if 'fmap' in ref_data.keys():
