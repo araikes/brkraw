@@ -164,12 +164,16 @@ COMMON_META_REF = \
          PhaseEncodingDirection         = [dict(key         = 'VisuAcqGradEncoding',
                                                 where       = 'phase_enc'),
                                            'VisuAcqImagePhaseEncDir'],  # Deprecated
-         AcquisitionMatrixPE            = dict(key = 'PVM_EncMatrix',
-                                               idx = 1),
-         ReconMatrixPE                  = dict(key = 'PVM_Matrix', # VisuAcqGradEncoding does not necessarily match PVM_Matrix order. PVM_Matrix is given in R/P/S
-                                               idx = 1),
+         AcquisitionMatrixPE            = dict(key = 'VisuAcqSize',
+                                               idx = [dict(key = 'VisuAcqGradEncoding',
+                                                           idx = 'phase_enc'),
+                                                      1]),
+         ReconMatrixPE                  = dict(key = 'VisuCoreSize',
+                                               idx = [dict(key = 'VisuAcqGradEncoding',
+                                                           idx = 'phase_enc'),
+                                                      1]),
          EchoTrainLength                = 'VisuAcqEchoTrainLength',
-
+         
 
          # TIMING_PARAMETERS
          # Singular echo time is not found in B0/field maps 
@@ -182,6 +186,7 @@ COMMON_META_REF = \
                                                 where       = 'slice_enc'),
                                            dict(EncSeq      = 'VisuAcqGradEncoding',
                                                 Equation    = 'len(EncSeq)')],
+         SliceThickness                 = 'VisuCoreFrameThickness',
          DwellTime                      = dict(BWhzPixel    ='VisuAcqPixelBandwidth',
                                                Equation     ='1/BWhzPixel'),
 
@@ -197,27 +202,29 @@ COMMON_META_REF = \
 
 
 ANAT_META_REF = \
-    dict(EchoTime                       = dict(TE           = 'EffectiveTE',
+    dict(EchoTime                       = dict(TE           = 'VisuAcqEchoTime',
                                                Equation     = 'np.array(TE)/1000'),
-         RepetitionTime                 = dict(TR           = 'PVM_RepetitionTime',
+         RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
                                                Equation     = 'TR/1000'),
          EffectiveEchoSpacing           = 'PVM_EchoTime',
-         TotalReadoutTime               = dict(TE    = 'PVM_EchoTime',
-                                               RareFactor = 'PVM_RareFactor',
-                                               Equation     = '(TE * (RareFactor -1)) / 1000'),
+         TotalReadoutTime               = dict(EchoSpacing    = 'PVM_EchoTime',
+                                               RareFactor    = 'PVM_RareFactor',
+                                               Equation      = '(EchoSpacing / 1000) * (RareFactor -1)'),
          RareFactor                     = 'PVM_RareFactor',
          NumberOfAverages               = 'VisuAcqNumberOfAverages'
          )    
 
 DWI_META_REF = \
-    dict(EchoTime                       = dict(TE           = 'EchoTime',
+    dict(EchoTime                       = dict(TE           = 'VisuAcqEchoTime',
                                                Equation     = 'np.array(TE)/1000'),
          RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
                                                Equation     = 'TR/1000'),
          EffectiveEchoSpacing           = 'PVM_EpiEchoSpacing',
          TotalReadoutTime               = dict(ES           = 'PVM_EpiEchoSpacing',
-                                               ReconMatrixPE = dict(key = 'PVM_Matrix', # PVM_Matrix (original param) does not necessary match VisuAcqGradEncoding, but is rather presented as read/phase/slice
-                                                                    idx = 1),
+                                               ReconMatrixPE = dict(key = 'VisuCoreSize',
+                                                                    idx = [dict(key = 'VisuAcqGradEncoding',
+                                                                                idx = 'phase_enc'),
+                                                                           1]),
                                                Equation     = '(ES * (ReconMatrixPE - 1))/1000'),
          Segments                       = 'NSegments',
          LittleDelta                    = 'PVM_DwGradDur',
@@ -225,7 +232,7 @@ DWI_META_REF = \
          )
     
 FMRI_META_REF = \
-    dict(EchoTime                       = dict(TE           = 'EchoTime',
+    dict(EchoTime                       = dict(TE           = 'VisuAcqEchoTime',
                                                Equation     = 'np.array(TE)/1000'),
          RepetitionTime                 = dict(TR           = 'VisuAcqRepetitionTime',
                                                Equation     = 'TR/1000'),
