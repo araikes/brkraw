@@ -166,11 +166,11 @@ COMMON_META_REF = \
                                            'VisuAcqImagePhaseEncDir'],  # Deprecated
          AcquisitionMatrixPE            = dict(key = 'VisuAcqSize',
                                                idx = [dict(key = 'VisuAcqGradEncoding',
-                                                           idx = 'phase_enc'),
+                                                           where = 'phase_enc'),
                                                       1]),
          ReconMatrixPE                  = dict(key = 'VisuCoreSize',
                                                idx = [dict(key = 'VisuAcqGradEncoding',
-                                                           idx = 'phase_enc'),
+                                                           where = 'phase_enc'),
                                                       1]),
          EchoTrainLength                = 'VisuAcqEchoTrainLength',
          
@@ -223,7 +223,7 @@ DWI_META_REF = \
          TotalReadoutTime               = dict(ES           = 'PVM_EpiEchoSpacing',
                                                ReconMatrixPE = dict(key = 'VisuCoreSize',
                                                                     idx = [dict(key = 'VisuAcqGradEncoding',
-                                                                                idx = 'phase_enc'),
+                                                                                where = 'phase_enc'),
                                                                            1]),
                                                Equation     = '(ES * (ReconMatrixPE - 1))/1000'),
          Segments                       = 'NSegments',
