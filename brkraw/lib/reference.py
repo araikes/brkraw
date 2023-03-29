@@ -165,9 +165,9 @@ COMMON_META_REF = \
                                                 where       = 'phase_enc'),
                                            'VisuAcqImagePhaseEncDir'],  # Deprecated
          AcquisitionMatrixPE            = dict(key = 'PVM_EncMatrix',
-                                               idx = 2),
+                                               idx = 1),
          ReconMatrixPE                  = dict(key = 'PVM_Matrix', # VisuAcqGradEncoding does not necessarily match PVM_Matrix order. PVM_Matrix is given in R/P/S
-                                               idx = 2),
+                                               idx = 1),
          EchoTrainLength                = 'VisuAcqEchoTrainLength',
 
 
