@@ -359,6 +359,20 @@ def get_bids_ref_obj(ref_path, row):
                         raise InvalidApproach('Duplicated key is found at func: {}'.format(k))
                     else:
                         ref[k] = v
+        if row.modality in ['dwi']:
+            if 'dwi' in ref_data.keys():
+                for k, v in ref_data['dwi'].items():
+                    if k in ref.keys():
+                        raise InvalidApproach('Duplicated key is found at dwi: {}'.format(k))
+                    else:
+                        ref[k] = v
+        if row.DataType in ['anat']:
+            if 'anat' in ref_data.keys():
+                for k, v in ref_data['anat'].items():
+                    if k in ref.keys():
+                        raise InvalidApproach('Duplicated key is found at anat: {}'.format(k))
+                    else:
+                        ref[k] = v
         # the below may not optimal for Bruker system,
         # only fieldmap and magnitude
         if row.modality in ['fieldmap', 'phase1', 'phase2',
