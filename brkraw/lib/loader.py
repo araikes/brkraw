@@ -559,6 +559,8 @@ class BrukerLoader():
                 visu_pars = self._get_visu_pars(scan_id, reco_id)
                 json_obj['Units'] = get_value(visu_pars, 'VisuCoreDataUnits')[0]
                 json_obj['IntendFor'] = ["func/*_bold.nii.gz"]
+            elif code == 'dwi' or code == 'anat' or code == 'func':
+                print('Valid code') # Make sure conditions for failure are identified.
             else:
                 raise InvalidApproach('Invalid datatype code for json creation')
 
