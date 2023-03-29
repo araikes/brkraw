@@ -403,8 +403,6 @@ def build_bids_json(dset, row, fname, json_path, slope=False, offset=False):
             ref = get_bids_ref_obj(json_path, row)
             if re.search('fieldmap', row.modality, re.IGNORECASE):
                 condition = ['fm', None]
-            elif re.search('rare', row.modality, re.IGNORECASE):
-                condition = ['anat', None] 
             else:
                 condition = None
             if re.search('magnitude', row.modality, re.IGNORECASE):
