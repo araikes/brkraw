@@ -407,8 +407,8 @@ def build_bids_json(dset, row, fname, json_path, slope=False, offset=False):
                 condition = ['dwi', None]
             elif re.search('func', row.modality, re.IGNORECASE):
                 condition = ['func', None]
-            elif re.search('anat', row.DataType, re.IGNORECASE):
-                condition = ['anat', None]
+            #elif re.search('anat', row.DataType, re.IGNORECASE):
+            #    condition = ['anat', None]
             else:
                 condition = None
             if re.search('magnitude', row.modality, re.IGNORECASE):
