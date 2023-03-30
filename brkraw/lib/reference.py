@@ -154,6 +154,7 @@ COMMON_META_REF = \
          PulseSequenceDetails           = 'ACQ_scan_name',
          NonlinearGradientCorrection    = 'false',
          MTState                        = 'VisuAcqMagnetizationTransfer',
+         AcquisitionDateTime            = 'VisuSeriesDate',
 
          # IN_PLANE_SPATIAL_ENCODING
          NumberShots                    = 'VisuAcqKSpaceTrajectoryCnt',
